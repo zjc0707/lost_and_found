@@ -92,22 +92,8 @@ public class FileMongoServiceImpl implements FileMongoService {
 		FileMongoDO fileMongoDO = null;
 		try {
 			Integer slot = Integer.parseInt(fileSlot);
-			if (slot < mongoConnectParamConfig.getBucketCollectNum()) {
-
-				log.debug(String.format("get collection: %d, id: %s", slot, id));
-				fileMongoDO = mongoOperations.findById(id, FileMongoDO.class, fileSlot);
-
-			}else {
-
-				log.debug(String.format("get bucket: %d, id: %s", slot, id));
-				gridFSDownloadStream = mongoConfig.getGridFSBucket(fileSlot).openDownloadStream(new ObjectId(id));
-				if (null != gridFSDownloadStream) {
-					GridFSFile gridFSFile = gridFSDownloadStream.getGridFSFile();
-					//todo: 这个md5函数 @deprecated，谨慎使用！开始读取数据,后续可以进一步优化输出效率！
-					fileMongoDO = new FileMongoDO(gridFSFile.getFilename(),gridFSFile.getMetadata().getString("_contentType"),
-							gridFSFile.getLength(),new Binary(gridFSDownloadStream.readAllBytes()));
-				}
-			}
+			log.debug(String.format("get collection: %d, id: %s", slot, id));
+			fileMongoDO = mongoOperations.findById(id, FileMongoDO.class, fileSlot);
 		}catch (Exception e) {
 
 			log.error("[" + fileSlot.concat("/").concat(id) + "] getFileByteById fail: " + e.getMessage());
