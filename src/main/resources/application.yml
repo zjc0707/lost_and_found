@@ -1,0 +1,35 @@
+server:
+  port: 8567
+  servlet:
+    context-path: /LAF
+
+mybatis-plus:
+  type-aliases-package: com.jc.lost_and_found.model
+  global-config:
+    db-config:
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+spring:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.102.133.53:3306/lost_and_found?useUnicode=true&characterEncoding=UTF-8&useAffectedRows=true&allowMultiQueries=true&useSSL=false&serverTimezone=GMT
+    username: root
+    password: jiacheng
+  data:
+    mongodb:
+      #uri: mongodb://zldz*_*2011:database2011*_*zldz2011@106.15.200.100:27027/file_server?authSource=file_server
+      host: 47.102.133.53
+      port: 27017
+      authentication-database: test
+      database: test
+      username: zjcTest
+      password: test
+      bucket-collect-num: 10
+      #单位为字节,缺省大于1M存入bucket 1048576
+      max-collect-file-size: 1048576
+
+logging:
+  config: classpath:logback.xml
+  level:
+    org.springframework.data.mongodb.core: DEBUG
