@@ -27,7 +27,15 @@ public interface MessageMapper extends BaseMapper<MessageDO> {
             "ORDER BY m.top DESC, m.deploy_time DESC")
     List<MessagePageVO> page(Integer state, Page<MessagePageVO> page);
 
-    @Select("SELECT id, title, user_id, deploy_time, top " +
+    @Select("SELECT m.id, m.title, m.state, m.user_id, m.deploy_time, m.top, u.user_name, GROUP_CONCAT(ur.role_id) AS role " +
+            "FROM message m INNER JOIN user_base_info u ON u.id = m.user_id " +
+            "LEFT JOIN user_role ur ON u.id = ur.user_id " +
+            "WHERE m.delete_flag = 1 " +
+            "GROUP BY m.id " +
+            "ORDER BY m.top DESC, m.deploy_time DESC")
+    List<MessagePageVO> pageRemove(Page<MessagePageVO> page);
+
+    @Select("SELECT id, title, deploy_time, top " +
             "FROM message " +
             "WHERE user_id = #{userId} " +
             "AND state = #{state} " +
@@ -38,10 +46,11 @@ public interface MessageMapper extends BaseMapper<MessageDO> {
     @Select("SELECT m.id, m.title, m.user_id, m.content, m.deploy_time, m.top, m.state, u.user_name, u.qq, u.wechat, u.telephone " +
             "FROM message m " +
             "LEFT JOIN user_base_info u ON u.id = m.user_id " +
-            "WHERE m.id = #{id} ")
+            "WHERE m.id = #{id} " +
+            "AND m.delete_flag = 0")
     @Results({
             @Result(property = "fileUrls", column = "id", javaType = List.class,
                     many = @Many(select = "com.jc.lost_and_found.mapper.MessageFileMapper.listByMessageId"))
     })
-    MessageDetailVO detail(Integer id);
+    MessageDetailVO detail(Long id);
 }

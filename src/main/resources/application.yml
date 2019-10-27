@@ -28,7 +28,9 @@ spring:
       bucket-collect-num: 10
       #单位为字节,缺省大于1M存入bucket 1048576
       max-collect-file-size: 1048576
-
+  cache:
+    ehcache:
+      config: classpath:ehcache.xml
 logging:
   config: classpath:logback.xml
   level:

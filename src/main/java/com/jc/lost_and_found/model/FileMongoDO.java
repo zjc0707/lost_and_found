@@ -1,5 +1,6 @@
 package com.jc.lost_and_found.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +12,7 @@ import java.util.Objects;
  * @author hx
  * @date 2019/8/17 10:14
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class FileMongoDO {
 

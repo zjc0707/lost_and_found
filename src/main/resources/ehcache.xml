@@ -44,7 +44,30 @@
                LFU， Less Frequently Used，就是上面例子中使用的策略，直白一点就是讲一直以来最少被使用的。如上面所讲，缓存的元素有一个hit属性，hit值最小的将会被清出缓存。
                LRU，Least Recently Used，最近最少使用的，缓存的元素有一个时间戳，当缓存容量满了，而又需要腾出地方来缓存新的元素的时候，那么现有缓存元素中时间戳离当前时间最远的元素将被清出缓存。
     -->
-
+    <cache name="messagePage"
+          maxEntriesLocalHeap="5000"
+          eternal="false"
+          timeToIdleSeconds="3600"
+          overflowToDisk="false"
+          statistics="false">
+        <cacheEventListenerFactory   class="com.jc.lost_and_found.cache.MyCacheEventListenerFactory"/>
+    </cache>
+<!--    <cache name="messagePageRemove"-->
+<!--           maxEntriesLocalHeap="500"-->
+<!--           eternal="false"-->
+<!--           timeToIdleSeconds="3600"-->
+<!--           overflowToDisk="false"-->
+<!--           statistics="false">-->
+<!--        <cacheEventListenerFactory   class="com.jc.lost_and_found.cache.MyCacheEventListenerFactory"/>-->
+<!--    </cache>-->
+    <cache name="messagePageDetail"
+           maxEntriesLocalHeap="500"
+           eternal="false"
+           timeToIdleSeconds="3600"
+           overflowToDisk="false"
+           statistics="false">
+        <cacheEventListenerFactory   class="com.jc.lost_and_found.cache.MyCacheEventListenerFactory"/>
+    </cache>
     <!-- 授权缓存 -->
     <cache name="authorizationCache"
            maxEntriesLocalHeap="2000"

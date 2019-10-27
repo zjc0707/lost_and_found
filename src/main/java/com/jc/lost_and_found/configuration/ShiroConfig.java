@@ -2,12 +2,15 @@ package com.jc.lost_and_found.configuration;
 
 import com.jc.lost_and_found.shiro.MyCredentialsMatcher;
 import com.jc.lost_and_found.shiro.MyShiroRealm;
+import net.sf.ehcache.CacheManager;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -105,8 +108,15 @@ public class ShiroConfig {
     @Bean
     public EhCacheManager ehCacheManager(){
         EhCacheManager cacheManager = new EhCacheManager();
-        cacheManager.setCacheManagerConfigFile("classpath:ehcache-shiro.xml");
+        cacheManager.setCacheManagerConfigFile("classpath:ehcache.xml");
         return cacheManager;
+    }
+    //设置ehCache的共享模式，不然spring和shiro会先后生成两次导致报错
+    @Bean
+    public EhCacheManagerFactoryBean ehCacheManagerFactoryBean(){
+        EhCacheManagerFactoryBean ehCacheManagerFactoryBean = new EhCacheManagerFactoryBean();
+        ehCacheManagerFactoryBean.setShared(true);
+        return ehCacheManagerFactoryBean;
     }
 }
 

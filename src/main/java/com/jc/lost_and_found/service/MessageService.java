@@ -2,17 +2,23 @@ package com.jc.lost_and_found.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.jc.lost_and_found.model.BaseSearchParam;
-import com.jc.lost_and_found.model.MessageDO;
-import com.jc.lost_and_found.model.MessageDetailVO;
-import com.jc.lost_and_found.model.MessagePageVO;
+import com.jc.lost_and_found.model.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * @author zjc
  * @date 2019/9/27
  */
 public interface MessageService extends IService<MessageDO> {
-    IPage<MessagePageVO> page(Integer state, BaseSearchParam baseSearchParam);
-    IPage<MessagePageVO> pageMy(Integer state, BaseSearchParam baseSearchParam);
-    MessageDetailVO detail(Integer id);
+    IPage<MessagePageVO> page(BaseSearchParam baseSearchParam);
+    IPage<MessagePageVO> pageMy(BaseSearchParam baseSearchParam);
+    MessageDetailVO detail(Long id);
+    boolean updateState(Long id, Integer state);
+    boolean topById(Long id, Boolean top);
+    boolean removeById(Long id);
+    void deploy(ShiroUserVO currentUser, BaseMessageDetailParam param);
+
+    IPage<MessagePageVO> pageRemove(BaseSearchParam baseSearchParam);
 }

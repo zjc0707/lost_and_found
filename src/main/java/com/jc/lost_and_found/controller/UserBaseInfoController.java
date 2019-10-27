@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.jc.lost_and_found.component.ResponseData;
 import com.jc.lost_and_found.component.ResponseDataUtil;
 import com.jc.lost_and_found.constant.ResultEnums;
+import com.jc.lost_and_found.model.MessageDO;
 import com.jc.lost_and_found.model.ShiroUserVO;
 import com.jc.lost_and_found.model.UserBaseInfoDO;
+import com.jc.lost_and_found.service.MessageService;
 import com.jc.lost_and_found.service.UserBaseInfoService;
 import com.jc.lost_and_found.shiro.MyShiroRealm;
 import com.jc.lost_and_found.utils.MyStringUtil;
@@ -32,6 +34,9 @@ public class UserBaseInfoController extends AbstractCrudController<UserBaseInfoS
     private UserBaseInfoService userBaseInfoService;
 
     @Autowired
+    private MessageService messageService;
+
+    @Autowired
     private MyShiroRealm myShiroRealm;
 
     @RequestMapping("editPassword")
@@ -42,7 +47,7 @@ public class UserBaseInfoController extends AbstractCrudController<UserBaseInfoS
         Subject subject = SecurityUtils.getSubject();
         ShiroUserVO obj = (ShiroUserVO) subject.getPrincipal();
         if(!obj.getId().equals(id)){
-            log.error("非洲账号修改请求:request:[" + id + "],login:[" + obj.getId() + "]");
+            log.error("非法账号修改请求:request:[" + id + "],login:[" + obj.getId() + "]");
             subject.logout();
             return ResponseDataUtil.buildIllegal();
         }
@@ -77,7 +82,7 @@ public class UserBaseInfoController extends AbstractCrudController<UserBaseInfoS
         Subject subject = SecurityUtils.getSubject();
         ShiroUserVO obj = (ShiroUserVO) subject.getPrincipal();
         if(!obj.getId().equals(id)){
-            log.error("非洲账号修改请求:request:[" + id + "],login:[" + obj.getId() + "]");
+            log.error("非法账号修改请求:request:[" + id + "],login:[" + obj.getId() + "]");
             subject.logout();
             return ResponseDataUtil.buildIllegal();
         }
@@ -96,6 +101,27 @@ public class UserBaseInfoController extends AbstractCrudController<UserBaseInfoS
             log.error("editContact fail:" + e.getMessage());
             return ResponseDataUtil.buildError();
         }
+    }
+
+    /**
+     * 将自己发布的信息转为解决状态
+     */
+    @RequestMapping("overMyMessage")
+    public ResponseData overMyMessage(Long userId, Long messageId){
+        Subject subject = SecurityUtils.getSubject();
+        ShiroUserVO obj = (ShiroUserVO) subject.getPrincipal();
+        if(!obj.getId().equals(userId)){
+            log.error("非法账号修改请求:request:[" + userId + "],login:[" + obj.getId() + "]");
+            subject.logout();
+            return ResponseDataUtil.buildIllegal();
+        }
+        try{
+            messageService.updateState(messageId, MessageDO.STATE_OVER);
+        }catch (Exception e){
+            log.error("deploy fail : {}", e.getMessage());
+            return ResponseDataUtil.buildError();
+        }
+        return ResponseDataUtil.buildSuccess();
     }
 
 }

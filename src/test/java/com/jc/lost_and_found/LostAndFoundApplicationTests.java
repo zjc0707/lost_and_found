@@ -23,7 +23,7 @@ public class LostAndFoundApplicationTests {
 
     @Test
     public void contextLoads() {
-        MessageDetailVO messageDetailVO = messageMapper.detail(1);
+//        MessageDetailVO messageDetailVO = messageMapper.detail(1);
     }
 
 }
