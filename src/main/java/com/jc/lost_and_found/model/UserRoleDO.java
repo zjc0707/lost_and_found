@@ -1,6 +1,7 @@
 package com.jc.lost_and_found.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @TableName("user_role")
 @EqualsAndHashCode(callSuper = false)
 public class UserRoleDO extends BaseEntity<UserRoleDO>{

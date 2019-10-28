@@ -101,6 +101,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, MessageDO> im
                         //管理员等有身份的用户发布无需再审核
                         currentUser.getRoles().size() > 0 ? MessageDO.STATE_NORMAL : MessageDO.STATE_CHECK);
         super.save(messageDO);
+        if(param.getFiles() == null) return;
         for(MultipartFile file : param.getFiles()){
             String fileUrl = fileMongoService.saveFile(file);
             messageFileService.save(new MessageFileDO(messageDO.getId(), fileUrl));

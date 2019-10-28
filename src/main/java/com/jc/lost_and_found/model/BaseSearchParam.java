@@ -15,4 +15,5 @@ public class BaseSearchParam {
     private Integer pageSize;
     private Long userId;
     private Integer state;
+    private Long roleId;
 }

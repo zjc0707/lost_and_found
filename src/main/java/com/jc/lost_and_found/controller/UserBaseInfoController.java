@@ -1,9 +1,11 @@
 package com.jc.lost_and_found.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.jc.lost_and_found.component.ResponseData;
 import com.jc.lost_and_found.component.ResponseDataUtil;
 import com.jc.lost_and_found.constant.ResultEnums;
+import com.jc.lost_and_found.model.BaseSearchParam;
 import com.jc.lost_and_found.model.MessageDO;
 import com.jc.lost_and_found.model.ShiroUserVO;
 import com.jc.lost_and_found.model.UserBaseInfoDO;
@@ -14,9 +16,12 @@ import com.jc.lost_and_found.utils.MyStringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,7 +44,17 @@ public class UserBaseInfoController extends AbstractCrudController<UserBaseInfoS
     @Autowired
     private MyShiroRealm myShiroRealm;
 
-    @RequestMapping("editPassword")
+    @PostMapping("page")
+    @RequiresPermissions("/user/page")
+    public ResponseData page(@ModelAttribute BaseSearchParam baseSearchParam){
+        IPage page = userBaseInfoService.page(baseSearchParam);
+        if(page.getRecords().isEmpty()){
+            return ResponseDataUtil.buildSend(ResultEnums.RESULT_IS_NULL);
+        }
+        return ResponseDataUtil.buildSuccess(page);
+    }
+
+    @PostMapping("editPassword")
     public ResponseData editPassword(Long id, String oldPassword, String newPassword){
         if(StringUtils.isEmpty(newPassword)){
             return ResponseDataUtil.buildSend(ResultEnums.PARAM_ERROR);
@@ -70,7 +85,7 @@ public class UserBaseInfoController extends AbstractCrudController<UserBaseInfoS
         }
     }
 
-    @RequestMapping("editContact")
+    @PostMapping("editContact")
     public ResponseData editContact(Long id, String userName, String qq, String wechat, String telephone){
         boolean isEmptyQq = StringUtils.isEmpty(qq),
                 isEmptyWechat = StringUtils.isEmpty(wechat),
@@ -106,7 +121,7 @@ public class UserBaseInfoController extends AbstractCrudController<UserBaseInfoS
     /**
      * 将自己发布的信息转为解决状态
      */
-    @RequestMapping("overMyMessage")
+    @PostMapping("overMyMessage")
     public ResponseData overMyMessage(Long userId, Long messageId){
         Subject subject = SecurityUtils.getSubject();
         ShiroUserVO obj = (ShiroUserVO) subject.getPrincipal();

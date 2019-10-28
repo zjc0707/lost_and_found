@@ -82,14 +82,14 @@ public class MessageController extends AbstractCrudController<MessageService, Me
      */
     @PostMapping("deploy")
     public ResponseData deploy(@ModelAttribute BaseMessageDetailParam param){
-        if(param.getFiles().size() > FILE_MAX_COUNT){
+        if(param.getFiles() != null && param.getFiles().size() > FILE_MAX_COUNT){
             return ResponseDataUtil.buildSend(ResultEnums.PARAM_ERROR);
         }
         try {
             ShiroUserVO currentUser = (ShiroUserVO) SecurityUtils.getSubject().getPrincipal();
             messageService.deploy(currentUser, param);
         }catch (Exception e){
-            log.error("deploy fail : {}", e.getMessage());
+            log.error("deploy fail : {}", e.toString());
             return ResponseDataUtil.buildError();
         }
         return ResponseDataUtil.buildSuccess();
@@ -108,6 +108,9 @@ public class MessageController extends AbstractCrudController<MessageService, Me
         return ResponseDataUtil.buildSuccess(page);
     }
 
+    /**
+     * 查看已被删除的消息
+     */
     @RequiresPermissions("/message/removeById")
     @PostMapping("pageRemove")
     public ResponseData pageRemove(@ModelAttribute BaseSearchParam baseSearchParam){
@@ -128,7 +131,7 @@ public class MessageController extends AbstractCrudController<MessageService, Me
         try{
             messageService.updateState(id, state);
         }catch (Exception e){
-            log.error("deploy fail : {}", e.getMessage());
+            log.error("updateState fail : {}", e.toString());
             return ResponseDataUtil.buildError();
         }
         return ResponseDataUtil.buildSuccess();
@@ -140,7 +143,7 @@ public class MessageController extends AbstractCrudController<MessageService, Me
         try{
             messageService.topById(id, top);
         }catch (Exception e){
-            log.error("deploy fail : {}", e.getMessage());
+            log.error("topById fail : {}", e.toString());
             return ResponseDataUtil.buildError();
         }
         return ResponseDataUtil.buildSuccess();
@@ -157,7 +160,7 @@ public class MessageController extends AbstractCrudController<MessageService, Me
         try{
             messageService.removeById(id);
         }catch (Exception e){
-            log.error(e.getMessage());
+            log.error("removeById fail : {}", e.toString());
             return ResponseDataUtil.buildError();
         }
         return ResponseDataUtil.buildSuccess();

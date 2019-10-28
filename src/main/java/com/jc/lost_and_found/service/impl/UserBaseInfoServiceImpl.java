@@ -1,12 +1,17 @@
 package com.jc.lost_and_found.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jc.lost_and_found.mapper.UserBaseInfoMapper;
+import com.jc.lost_and_found.model.BaseSearchParam;
 import com.jc.lost_and_found.model.UserBaseInfoDO;
 import com.jc.lost_and_found.service.UserBaseInfoService;
 import com.jc.lost_and_found.utils.MyStringUtil;
 import org.apache.shiro.crypto.hash.SimpleHash;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +20,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserBaseInfoServiceImpl  extends ServiceImpl<UserBaseInfoMapper, UserBaseInfoDO> implements UserBaseInfoService {
+
+    @Cacheable(value = "userPage")
+    @Override
+    public IPage<UserBaseInfoDO> page(BaseSearchParam baseSearchParam) {
+        Page<UserBaseInfoDO> page = new Page<>(baseSearchParam.getPageIndex(), baseSearchParam.getPageSize());
+        return page.setRecords(super.baseMapper.pageByRoleId(baseSearchParam, page));
+    }
+
     @Override
     public UserBaseInfoDO findByLoginName(String loginName) {
         return this.getOne(new QueryWrapper<UserBaseInfoDO>().eq("login_name", loginName));
