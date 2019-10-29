@@ -71,7 +71,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, MessageDO> im
         return super.updateById(update);
     }
 
-    @CacheEvict(value = {"messagePage"}, allEntries = true)
+    @CacheEvict(value = {"messagePage","messagePageDetail"}, allEntries = true)
     @Override
     public boolean topById(Long id, Boolean top) {
         MessageDO update = new MessageDO();

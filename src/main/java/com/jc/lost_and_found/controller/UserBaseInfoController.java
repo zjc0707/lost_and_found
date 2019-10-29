@@ -20,6 +20,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -110,7 +112,6 @@ public class UserBaseInfoController extends AbstractCrudController<UserBaseInfoS
             userBaseInfoDO.setTelephone(isEmptyTel ? null : telephone);
             userBaseInfoService.updateById(userBaseInfoDO);
             myShiroRealm.clearCachedAuthenticationInfo(subject.getPrincipals());
-
             return ResponseDataUtil.buildSuccess();
         }catch (Exception e){
             log.error("editContact fail:" + e.getMessage());
