@@ -19,6 +19,6 @@ public interface MessageService extends IService<MessageDO> {
     boolean topById(Long id, Boolean top);
     boolean removeById(Long id);
     void deploy(ShiroUserVO currentUser, BaseMessageDetailParam param);
-
     IPage<MessagePageVO> pageRemove(BaseSearchParam baseSearchParam);
+    List<MessageDO> listDeployTimeLE(Long time);
 }

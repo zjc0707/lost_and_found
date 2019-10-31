@@ -1,5 +1,6 @@
 package com.jc.lost_and_found.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -54,6 +55,15 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, MessageDO> im
         Page<MessagePageVO> page = new Page<>(baseSearchParam.getPageIndex(), baseSearchParam.getPageSize());
         page.setRecords(super.baseMapper.pageRemove(page));
         return page;
+    }
+
+    @Override
+    public List<MessageDO> listDeployTimeLE(Long time) {
+        QueryWrapper<MessageDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id")
+                .le("deploy_time",time)
+                .last("limit 100");
+        return super.list(queryWrapper);
     }
 
     @Cacheable(value = "messagePageDetail")
