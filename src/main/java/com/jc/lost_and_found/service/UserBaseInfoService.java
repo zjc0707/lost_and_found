@@ -14,6 +14,5 @@ public interface UserBaseInfoService extends IService<UserBaseInfoDO> {
     UserBaseInfoDO findByLoginName(String loginName);
     boolean isLoginNameExist(String loginName);
     void register(UserBaseInfoDO target);
-
-
+    void updateLoginTime(Long id, Long time);
 }

@@ -96,7 +96,7 @@ public class LoginController {
         if((System.currentTimeMillis() < registerVO.getTimeStamp()) || ((System.currentTimeMillis() - registerVO.getTimeStamp()) >= TIMESTAMP_INVALID_TIME_GAP))
         {
             log.error("操作超时");
-            return ResponseDataUtil.buildSend(ResultEnums.PARAM_ERROR);
+            return ResponseDataUtil.buildSend(ResultEnums.OUT_TIME);
         }
         Subject currentUser = SecurityUtils.getSubject();
         Session session = currentUser.getSession();
@@ -121,7 +121,7 @@ public class LoginController {
         }
         try {
             userBaseInfoService.register(new UserBaseInfoDO(registerVO));
-            UsernamePasswordToken token = new UsernamePasswordToken(registerVO.getLoginName(), registerVO.getLoginPassword(), registerVO.getTimeStamp().toString());
+            UsernamePasswordToken token = new UsernamePasswordToken(registerVO.getLoginName(), registerVO.getLoginPassword(), String.valueOf(registerVO.getTimeStamp()/1000));
             currentUser.login(token);
             return ResponseDataUtil.buildSend(ResultEnums.REGISTER_SUCCESS, currentUser.getPrincipal());
         }catch (Exception e){
@@ -161,7 +161,7 @@ public class LoginController {
                 try {
                     if (!currentUser.isAuthenticated()) {
                         //借用Host字段用于传递timeStamp参数
-                        UsernamePasswordToken token = new UsernamePasswordToken(loginVO.getLoginName(), loginVO.getLoginPassword(), loginVO.getTimeStamp().toString());
+                        UsernamePasswordToken token = new UsernamePasswordToken(loginVO.getLoginName(), loginVO.getLoginPassword(), String.valueOf((loginVO.getTimeStamp()/1000)));
                         //token.setRememberMe(true);
                         currentUser.login(token);
                     }

@@ -50,6 +50,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         if (null == userBaseInfoDO) {
             throw new UnknownAccountException();
         }
+        userBaseInfoService.updateLoginTime(userBaseInfoDO.getId(), Long.parseLong(token.getHost()));
         ShiroUserVO userVO = new ShiroUserVO(userBaseInfoDO);
         userVO.setRoles(roleInfoMapper.getRoleNameByUserId(userVO.getId()));
         if(!userVO.getRoles().isEmpty()){

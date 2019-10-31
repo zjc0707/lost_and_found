@@ -33,6 +33,7 @@ public class UserBaseInfoDO extends BaseEntity<UserBaseInfoDO> {
     private String wechat;
     private String telephone;
     private Long registerTime;
+    private Long loginTime;
 
     @JsonIgnore
     public String getLoginPassword() {return loginPassword;}

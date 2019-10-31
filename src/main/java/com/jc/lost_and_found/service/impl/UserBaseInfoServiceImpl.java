@@ -46,4 +46,15 @@ public class UserBaseInfoServiceImpl  extends ServiceImpl<UserBaseInfoMapper, Us
         target.setRegisterTime(target.getRegisterTime()/1000);
         this.save(target);
     }
+
+    @CacheEvict(value = "userPage", allEntries = true)
+    @Override
+    public void updateLoginTime(Long id, Long time) {
+        UserBaseInfoDO target = new UserBaseInfoDO();
+        target.setId(id);
+        target.setLoginTime(time);
+        super.updateById(target);
+    }
+
+
 }
