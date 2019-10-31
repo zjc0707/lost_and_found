@@ -21,13 +21,13 @@ import java.util.List;
 @SpringBootTest
 public class LostAndFoundApplicationTests {
 
-    @Autowired
-    private MessageService messageService;
+//    @Autowired
+//    private MessageService messageService;
 
     @Test
     public void contextLoads() {
-        List<MessageDO> list = messageService.listDeployTimeLE(System.currentTimeMillis()/1000 - 60*60*24*10);
-        log.info(list.toString());
+//        List<MessageDO> list = messageService.listDeployTimeLE(System.currentTimeMillis()/1000 - 60*60*24*10);
+//        log.info(list.toString());
     }
 
 }

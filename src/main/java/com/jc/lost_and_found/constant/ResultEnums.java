@@ -15,6 +15,7 @@ public enum ResultEnums {
     ERROR(1111, "业务请求失败！"),
     PARAM_ERROR(1112, "无效请求参数！"),
     ILLEGAL_ERROR(1113, "账号非法请求"),
+    OUT_TIME(1114,"操作超时"),
 
     //登陆结果常数
     LOGIN_SUCCESS(2000, "登陆成功！"),

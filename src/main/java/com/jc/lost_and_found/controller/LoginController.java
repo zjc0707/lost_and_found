@@ -76,10 +76,12 @@ public class LoginController {
     public ResponseData register(@ModelAttribute RegisterVO registerVO){
         if(StringUtils.isEmpty(registerVO.getLoginName()) || StringUtils.isEmpty(registerVO.getLoginPassword()) || StringUtils.isEmpty(registerVO.getCaptchaCode()) || (null == registerVO.getTimeStamp()))
         {
+            log.error("必填项为空:"+registerVO);
             return ResponseDataUtil.buildSend(ResultEnums.PARAM_ERROR);
         }
         //三选一
         if(StringUtils.isEmpty(registerVO.getQq()) && StringUtils.isEmpty(registerVO.getWechat()) && StringUtils.isEmpty(registerVO.getTelephone())){
+            log.error("选填项均为空:"+registerVO);
             return ResponseDataUtil.buildSend(ResultEnums.REGISTER_NON_CONFORMITY);
         }
         //账号密码长度限制
@@ -87,20 +89,24 @@ public class LoginController {
                 || registerVO.getLoginName().length() > ACCOUNT_MAX_LENGTH
                 || registerVO.getLoginPassword().length() > PASSWORD_MAX_LENGTH
                 || registerVO.getLoginPassword().length() < PASSWORD_MIN_LENGTH){
+            log.error("输入长度不符合规范:"+registerVO);
             return ResponseDataUtil.buildSend(ResultEnums.REGISTER_NON_CONFORMITY);
         }
 
         if((System.currentTimeMillis() < registerVO.getTimeStamp()) || ((System.currentTimeMillis() - registerVO.getTimeStamp()) >= TIMESTAMP_INVALID_TIME_GAP))
         {
+            log.error("操作超时");
             return ResponseDataUtil.buildSend(ResultEnums.PARAM_ERROR);
         }
         Subject currentUser = SecurityUtils.getSubject();
         Session session = currentUser.getSession();
         String captchaCode = (String) session.getAttribute(Constants.KAPTCHA_SESSION_KEY);
         if(captchaCode == null){
+            log.error("验证码为空");
             return ResponseDataUtil.buildSend(ResultEnums.VERIFY_CODE_EMPTY);
         }
         if(!registerVO.getCaptchaCode().equals(captchaCode)){
+            log.error("验证码不正常：input[" + registerVO.getCaptchaCode() + "],db["+captchaCode+"]");
             return ResponseDataUtil.buildSend(ResultEnums.VERIFY_CODE_ERROR);
         }
         Long captchaTime = (Long) session.getAttribute("captchaTime");
@@ -110,6 +116,7 @@ public class LoginController {
         }
         log.debug("captchaTime gap: " + System.currentTimeMillis() + "," + (System.currentTimeMillis() - captchaTime) + ",captchaCode: " + captchaCode);
         if(userBaseInfoService.isLoginNameExist(registerVO.getLoginName())){
+            log.error("账号已存在: "+ registerVO.getLoginName());
             return ResponseDataUtil.buildSend(ResultEnums.REGISTER_ACCOUNT_EXIST);
         }
         try {
@@ -118,7 +125,7 @@ public class LoginController {
             currentUser.login(token);
             return ResponseDataUtil.buildSend(ResultEnums.REGISTER_SUCCESS, currentUser.getPrincipal());
         }catch (Exception e){
-            log.error(e.getMessage());
+            log.error("register or login fail: "+ e.toString());
             return ResponseDataUtil.buildSend(ResultEnums.REGISTER_ERROR);
         }
     }

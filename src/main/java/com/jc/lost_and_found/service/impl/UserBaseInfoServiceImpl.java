@@ -11,6 +11,7 @@ import com.jc.lost_and_found.model.UserBaseInfoDO;
 import com.jc.lost_and_found.service.UserBaseInfoService;
 import com.jc.lost_and_found.utils.MyStringUtil;
 import org.apache.shiro.crypto.hash.SimpleHash;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,7 @@ public class UserBaseInfoServiceImpl  extends ServiceImpl<UserBaseInfoMapper, Us
         return this.findByLoginName(loginName) != null;
     }
 
+    @CacheEvict(value = "userPage", allEntries = true)
     @Override
     public void register(UserBaseInfoDO target) {
         target.setLoginPassword(MyStringUtil.match(target.getLoginPassword()));
