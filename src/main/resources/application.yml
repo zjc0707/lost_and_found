@@ -16,6 +16,11 @@ spring:
     url: jdbc:mysql://47.102.133.53:3306/lost_and_found?useUnicode=true&characterEncoding=UTF-8&useAffectedRows=true&allowMultiQueries=true&useSSL=false&serverTimezone=GMT
     username: root
     password: jiacheng
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 10
+      max-lifetime: 30000
+      connection-test-query: SELECT 1
   data:
     mongodb:
       #uri: mongodb://zldz*_*2011:database2011*_*zldz2011@106.15.200.100:27027/file_server?authSource=file_server

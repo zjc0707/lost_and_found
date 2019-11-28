@@ -19,8 +19,8 @@ import java.io.IOException;
 public class ImageUtil {
 
     // 图片默认缩放比率
-    private static final int DEFAULT_WIDTH = 256;
-    private static final int DEFAULT_HEIGHT = 256;
+    private static final int DEFAULT_WIDTH = 512;
+    private static final int DEFAULT_HEIGHT = 512;
 
     public static byte[] makeByBufferImage(byte[] bytes, String fileName) throws IOException {
         BufferedImage bufferedImage = bytesToBufferedImage(bytes);
