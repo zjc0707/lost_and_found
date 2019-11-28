@@ -57,7 +57,6 @@ public class LoginController {
         // get the currently executing user:
         Subject currentUser = SecurityUtils.getSubject();
         Session session = currentUser.getSession();
-        log.info(session.getHost() +"_"+session.getId());
         session.setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
         session.setAttribute("captchaTime", System.currentTimeMillis());
         // 生成验证码图片
@@ -102,11 +101,11 @@ public class LoginController {
         Session session = currentUser.getSession();
         String captchaCode = (String) session.getAttribute(Constants.KAPTCHA_SESSION_KEY);
         if(captchaCode == null){
-            log.error("验证码为空");
-            return ResponseDataUtil.buildSend(ResultEnums.VERIFY_CODE_EMPTY);
+//            log.error("验证码为空");
+//            return ResponseDataUtil.buildSend(ResultEnums.VERIFY_CODE_EMPTY);
         }
-        if(!registerVO.getCaptchaCode().equals(captchaCode)){
-            log.error("验证码不正常：input[" + registerVO.getCaptchaCode() + "],db["+captchaCode+"]");
+        if(!registerVO.getCaptchaCode().toLowerCase().equals(captchaCode.toLowerCase())){
+            log.error("验证码不正确：input[" + registerVO.getCaptchaCode() + "],db["+captchaCode+"]");
             return ResponseDataUtil.buildSend(ResultEnums.VERIFY_CODE_ERROR);
         }
         Long captchaTime = (Long) session.getAttribute("captchaTime");
@@ -135,22 +134,16 @@ public class LoginController {
         if ((null == loginVO.getLoginName()) || (null == loginVO.getLoginPassword()) || (null == loginVO.getCaptchaCode()) || (null == loginVO.getTimeStamp())) {
             return ResponseDataUtil.buildSend(ResultEnums.PARAM_ERROR);
         }
-
-        String resultData = "loginName: " + loginVO.getLoginName() + ",password：" + loginVO.getLoginPassword()
-                + ",captchaCode: " + loginVO.getCaptchaCode() + ",timeStamp: " + loginVO.getTimeStamp() + ",[" + System.currentTimeMillis() + "]";
-        log.debug(resultData);
-
         if ((System.currentTimeMillis() < loginVO.getTimeStamp()) || ((System.currentTimeMillis() - loginVO.getTimeStamp()) >= TIMESTAMP_INVALID_TIME_GAP)) {
             return ResponseDataUtil.buildSend(ResultEnums.PARAM_ERROR);
         }
         ResultEnums loginResultEnum = ResultEnums.VERIFY_CODE_ERROR;
         Subject currentUser = SecurityUtils.getSubject();
         Session session = currentUser.getSession();
-        log.info(session.getHost() + "_" + session.getId());
         String captchaCode = (String) session.getAttribute(Constants.KAPTCHA_SESSION_KEY);
         if (captchaCode == null) {
             loginResultEnum = ResultEnums.VERIFY_CODE_EMPTY;
-        } else if (loginVO.getCaptchaCode().equals(captchaCode)) {
+        } else if (loginVO.getCaptchaCode().toLowerCase().equals(captchaCode.toLowerCase())) {
             Long captchaTime = (Long) session.getAttribute("captchaTime");
             if (null == captchaTime) {
                 log.error("null == captchaTime");

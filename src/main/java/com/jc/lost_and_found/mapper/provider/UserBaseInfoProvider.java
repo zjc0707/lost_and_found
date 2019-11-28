@@ -15,6 +15,6 @@ public class UserBaseInfoProvider {
                 "WHERE u.delete_flag = 0 " +
                 "AND ur.role_id ";
         sql = baseSearchParam.getRoleId() == null ? sql.concat("is NULL ") : sql.concat("= #{baseSearchParam.roleId} ");
-        return sql.concat("ORDER BY u.id");
+        return sql.concat("ORDER BY u.login_time DESC");
     }
 }
