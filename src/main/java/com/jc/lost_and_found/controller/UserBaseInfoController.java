@@ -89,13 +89,10 @@ public class UserBaseInfoController extends AbstractCrudController<UserBaseInfoS
 
     @PostMapping("editContact")
     public ResponseData editContact(Long id, String userName, String qq, String wechat, String telephone){
-        boolean isEmptyQq = StringUtils.isEmpty(qq),
-                isEmptyWechat = StringUtils.isEmpty(wechat),
-                isEmptyTel = StringUtils.isEmpty(telephone),
-                isEmptyUserName = StringUtils.isEmpty(userName);
-        if(isEmptyQq && isEmptyWechat && isEmptyTel && isEmptyUserName){
-            return ResponseDataUtil.buildSend(ResultEnums.REGISTER_NON_CONFORMITY);
-        }
+        boolean notEditQq = notEdit(qq),
+                notEditWechat = notEdit(wechat),
+                notEditTel = notEdit(telephone),
+                notEditUserName = notEdit(userName);
         Subject subject = SecurityUtils.getSubject();
         ShiroUserVO obj = (ShiroUserVO) subject.getPrincipal();
         if(!obj.getId().equals(id)){
@@ -106,10 +103,10 @@ public class UserBaseInfoController extends AbstractCrudController<UserBaseInfoS
         try{
             UserBaseInfoDO userBaseInfoDO = new UserBaseInfoDO();
             userBaseInfoDO.setId(id);
-            userBaseInfoDO.setUserName(isEmptyUserName ? null : userName);
-            userBaseInfoDO.setQq(isEmptyQq ? null : qq);
-            userBaseInfoDO.setWechat(isEmptyWechat ? null : wechat);
-            userBaseInfoDO.setTelephone(isEmptyTel ? null : telephone);
+            userBaseInfoDO.setUserName(notEditUserName ? null : userName);
+            userBaseInfoDO.setQq(notEditQq ? null : qq);
+            userBaseInfoDO.setWechat(notEditWechat ? null : wechat);
+            userBaseInfoDO.setTelephone(notEditTel ? null : telephone);
             userBaseInfoService.updateById(userBaseInfoDO);
             myShiroRealm.clearCachedAuthenticationInfo(subject.getPrincipals());
             return ResponseDataUtil.buildSuccess();
@@ -140,4 +137,7 @@ public class UserBaseInfoController extends AbstractCrudController<UserBaseInfoS
         return ResponseDataUtil.buildSuccess();
     }
 
+    private boolean notEdit(String s){
+        return s.equals("null");
+    }
 }
